@@ -455,9 +455,11 @@ on property:persist.vendor.sys.pil_proxy_timeout=*
 on property:sys.boot_completed=1
     write /dev/kmsg "Boot completed "
 
-    # Reset read ahead for dm-0 and dm-1 to 512kb
-    write /sys/block/dm-0/queue/read_ahead_kb 512
-    write /sys/block/dm-1/queue/read_ahead_kb 512
+    # Reset read ahead for dm-0 and dm-1 to 128
+    write /sys/block/dm-0/queue/read_ahead_kb 128
+    write /sys/block/dm-0/queue/nr_requests 64
+    write /sys/block/dm-1/queue/read_ahead_kb 128
+    write /sys/block/dm-1/queue/nr_requests 64
 
     # WDSP FW boot sysfs node used by STHAL
     chown media audio /sys/kernel/wdsp0/boot
@@ -467,10 +469,12 @@ on property:sys.boot_completed=1
 
     # Runtime FS tuning: as we have init boottime setting and kernel patch setting
     # we should adjust the setting upon boot_complete for runtime performance
-    write /sys/block/sda/queue/nr_requests 128
-    write /sys/block/sda/queue/iostats 1
-    write /sys/block/sdf/queue/nr_requests 128
-    write /sys/block/sdf/queue/iostats 1
+    write /sys/block/sda/queue/read_ahead_kb 128
+    write /sys/block/sda/queue/nr_requests 64
+    write /sys/block/sda/queue/iostats 0
+    write /sys/block/sdf/queue/read_ahead_kb 128
+    write /sys/block/sdf/queue/nr_requests 64
+    write /sys/block/sdf/queue/iostats 0
 
     start qcom-post-boot
 
